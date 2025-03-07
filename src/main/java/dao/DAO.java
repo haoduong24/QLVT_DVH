@@ -3,60 +3,33 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import entity.DanhMuc;
-import entity.Product;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import connect.DbConnection;
+import entity.Product;
 
 public class DAO {
+    // Lấy tất cả sản phẩm
+    public List<Product> getAllProducts() {
+        List<Product> list = new ArrayList<>();
+        String sql = "SELECT * FROM vattu"; // Kiểm tra lại tên bảng
 
-	Connection conn = null;
-	PreparedStatement ps = null;
-	ResultSet rs = null;
-	
-	public List<Product> getAllProduct(){
-		List<Product> list = new ArrayList<>();
-		String query = "select *from VatTu";
-		try {
-			conn = new DbConnection().getConnection(); // mo ket noi sql
-			ps = conn.prepareStatement(query);
-			rs = ps.executeQuery();
-			while(rs.next()) {
-				list.add(new Product(rs.getInt(1),
-						rs.getString(2),
-						rs.getDouble(3),
-						rs.getString(4)));
-			}
-			} catch (Exception e) {
-		}
-		return list;
-	}
-	public List<DanhMuc> getAllDanhMuc(){
-		List<DanhMuc> list = new ArrayList<>();
-		String query = "select*from DanhMuc	";
-		try {
-			conn = new DbConnection().getConnection(); // mo ket noi sql
-			ps = conn.prepareStatement(query);
-			rs = ps.executeQuery();
-			while(rs.next()) {
-				list.add(new DanhMuc(rs.getInt(1),
-						rs.getString(2),
-						rs.getString(3)));
-			}
-			} catch (Exception e) {
-		}
-		return list;
-	}
-	public static void main(String[] args) {
-		DAO dao = new DAO();
-		List<Product> list = dao.getAllProduct();
-		List<DanhMuc> listC = dao.getAllDanhMuc();
-		for (DanhMuc o : listC) {
-			System.out.println(o);
-		}
-	}
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Product p = new Product(
+                    rs.getInt("MaVatTu"),
+                    rs.getString("TenVatTu"),
+                    rs.getString("AnhSanPham"),
+                    rs.getDouble("GiaBan"),
+                    rs.getInt("MaDanhMuc") // Thêm mã danh mục
+                );
+                list.add(p);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

@@ -1,66 +1,59 @@
 package entity;
 
 public class Product {
-    private int MaVatTu;
-    private String TenVatTu;
-    private double GiaBan;
-    private String AnhSanPham;
+    private int maVatTu;
+    private String tenVatTu;
+    private String anhSanPham;
+    private double giaBan;
+    private int maDanhMuc;
 
-    // Constructor không tham số
-    public Product() {
+    public Product() {}
+
+    public Product(int maVatTu, String tenVatTu, String anhSanPham, double giaBan, int maDanhMuc) {
+        this.maVatTu = maVatTu;
+        this.tenVatTu = tenVatTu;
+        this.anhSanPham = anhSanPham;
+        this.giaBan = giaBan;
+        this.maDanhMuc = maDanhMuc;
     }
 
-    // Constructor đầy đủ tham số
-    public Product(int MaVatTu, String TenVatTu, double GiaBan, String AnhSanPham) {
-        this.MaVatTu = MaVatTu;
-        this.TenVatTu = TenVatTu;
-        this.GiaBan = GiaBan;
-        this.AnhSanPham = AnhSanPham;
-    }
-
-    // Getter & Setter cho MaVatTu
     public int getMaVatTu() {
-        return MaVatTu;
+        return maVatTu;
     }
 
     public void setMaVatTu(int maVatTu) {
-        this.MaVatTu = maVatTu;
+        this.maVatTu = maVatTu;
     }
 
-    // Getter & Setter cho TenVatTu
     public String getTenVatTu() {
-        return TenVatTu;
+        return tenVatTu;
     }
 
     public void setTenVatTu(String tenVatTu) {
-        this.TenVatTu = tenVatTu;
+        this.tenVatTu = tenVatTu;
     }
 
-    // Getter & Setter cho GiaBan
-    public double getGiaBan() {
-        return GiaBan;
-    }
-
-    public void setGiaBan(double giaBan) {
-        this.GiaBan = giaBan;
-    }
-
-    // Getter & Setter cho AnhSanPham
     public String getAnhSanPham() {
-        return AnhSanPham;
+        return anhSanPham;
     }
 
     public void setAnhSanPham(String anhSanPham) {
-        this.AnhSanPham = anhSanPham;
+        this.anhSanPham = anhSanPham;
     }
- // Ghi đè phương thức toString()
-    @Override
-    public String toString() {
-        return "Product{" +
-                "MaVatTu=" + MaVatTu +
-                ", TenVatTu='" + TenVatTu + '\'' +
-                ", GiaBan=" + GiaBan +
-                ", AnhSanPham='" + AnhSanPham + '\'' +
-                '}';
+
+    public double getGiaBan() {
+        return giaBan;
+    }
+
+    public void setGiaBan(double giaBan) {
+        this.giaBan = giaBan;
+    }
+
+    public int getMaDanhMuc() {
+        return maDanhMuc;
+    }
+
+    public void setMaDanhMuc(int maDanhMuc) {
+        this.maDanhMuc = maDanhMuc;
     }
 }
