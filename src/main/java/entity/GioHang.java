@@ -15,10 +15,15 @@ public class GioHang {
         if (product == null || quantity <= 0) return;
 
         int productId = product.getMaVatTu();
-        items.putIfAbsent(productId, new CartItem(product, 0));
+        items.putIfAbsent(productId, 
+            new CartItem(product.getMaVatTu(), product.getTenVatTu(), product.getAnhSanPham(), product.getGiaBan(), 0)
+        );
 
         CartItem item = items.get(productId);
         item.setQuantity(item.getQuantity() + quantity);
+
+        // Debug kiểm tra tên sản phẩm
+        System.out.println("Thêm vào giỏ hàng: " + item.getTenVatTu() + " - Số lượng: " + item.getQuantity());
     }
 
     // Xóa sản phẩm khỏi giỏ hàng
@@ -26,7 +31,7 @@ public class GioHang {
         items.remove(productId);
     }
 
-    // Cập nhật số lượng sản phẩm trong giỏ hàng
+    // Cập nhật số lượng sản phẩm
     public void updateQuantity(int productId, int quantity) {
         if (items.containsKey(productId)) {
             if (quantity > 0) {
@@ -40,7 +45,7 @@ public class GioHang {
     // Tính tổng tiền giỏ hàng
     public double getTotalPrice() {
         return items.values().stream()
-                .mapToDouble(item -> item.getProduct().getGiaBan() * item.getQuantity())
+                .mapToDouble(item -> item.getGiaBan() * item.getQuantity()) // Fix lỗi
                 .sum();
     }
 
@@ -49,7 +54,7 @@ public class GioHang {
         return items;
     }
 
-    // Lấy tổng số lượng sản phẩm trong giỏ hàng
+    // Lấy tổng số lượng sản phẩm
     public int getTotalItems() {
         return items.values().stream()
                 .mapToInt(CartItem::getQuantity)

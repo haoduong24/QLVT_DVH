@@ -1,75 +1,62 @@
-/* Reset CSS */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+body {
+    background-color: #f8f9fa;
     font-family: Arial, sans-serif;
 }
 
-body {
-    background-color: #ffe6f2; /* Hồng nhạt */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-/* Container chính */
-.register-container {
+.container {
+    margin-top: 50px;
+    max-width: 500px;
     background: white;
-    padding: 30px;
+    padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
     text-align: center;
-    width: 350px;
+    color: #343a40;
 }
 
-/* Tiêu đề */
-.register-container h2 {
-    color: #ff66b2;
-    margin-bottom: 20px;
+.form-group {
+    margin-bottom: 15px;
 }
 
-/* Input */
-.register-form input {
+label {
+    font-weight: bold;
+    color: #555;
+}
+
+input[type="text"], input[type="password"], input[type="email"], input[type="tel"] {
     width: 100%;
     padding: 10px;
-    margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 16px;
 }
 
-/* Nút Đăng ký */
-.register-form button {
-    background: #ff66b2;
+.btn-register {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
     color: white;
     border: none;
-    padding: 12px;
-    width: 100%;
     border-radius: 5px;
-    cursor: pointer;
     font-size: 16px;
-    font-weight: bold;
+    cursor: pointer;
 }
 
-.register-form button:hover {
-    background: #ff3385;
+.btn-register:hover {
+    background-color: #218838;
 }
 
-/* Thông báo lỗi */
-.error {
-    color: red;
-    font-size: 14px;
-    margin-bottom: 10px;
+.text-center {
+    margin-top: 15px;
 }
 
-/* Định dạng liên kết */
-.register-container a {
-    color: #ff66b2;
+.text-center a {
     text-decoration: none;
+    color: #007bff;
 }
 
-.register-container a:hover {
+.text-center a:hover {
     text-decoration: underline;
 }

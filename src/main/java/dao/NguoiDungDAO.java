@@ -3,66 +3,86 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import entity.NguoiDung;
-import dao.DbConnection;  // Đảm bảo bạn có class DBConnection để quản lý kết nối
+import dao.DbConnection; // Kiểm tra class này có đúng không?
 
-@SuppressWarnings("unused")
 public class NguoiDungDAO {
-    
-    // Đăng ký tài khoản
-    public boolean registerUser(String tenDangNhap, String matKhau, String hoTen, String email, String soDienThoai, String vaiTro) {
-        String query = "INSERT INTO nguoidung (tendangnhap, matkhau, hoten, email, sodienthoai, vaitro) VALUES (?, ?, ?, ?, ?, ?)";
+
+    // KIỂM TRA ĐĂNG NHẬP
+    public NguoiDung checkLogin(String tenDangNhap, String matKhau) {
+        String sql = "SELECT manguoidung, tendangnhap, matkhau, hoten, email, sodienthoai, vaitro FROM NguoiDung WHERE tendangnhap = ? AND matkhau = ?";
         
-        try (Connection conn = DbConnection.getConnection();  
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, tenDangNhap);
-            stmt.setString(2, matKhau);  // Cần mã hóa mật khẩu nếu bảo mật
+            stmt.setString(2, matKhau);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new NguoiDung(
+                        rs.getInt("manguoidung"),
+                        rs.getString("tendangnhap"),
+                        rs.getString("matkhau"), // Lưu ý: Không nên trả về mật khẩu!
+                        rs.getString("hoten"),
+                        rs.getString("email"),
+                        rs.getString("sodienthoai"),
+                        rs.getString("vaitro") != null ? rs.getString("vaitro") : "nhan_vien" // Mặc định nếu NULL
+                    );
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Lỗi khi kiểm tra đăng nhập: " + e.getMessage());
+            e.printStackTrace(); 
+        }
+        return null;
+    }
+
+    // ĐĂNG KÝ NGƯỜI DÙNG (CHỈ CHO NHÂN VIÊN)
+    public boolean registerUser(String tenDangNhap, String matKhau, String hoTen, String email, String soDienThoai) {
+        // KIỂM TRA XEM TÀI KHOẢN ĐÃ TỒN TẠI CHƯA
+        if (isUserExists(tenDangNhap)) {
+            System.err.println("Tài khoản đã tồn tại: " + tenDangNhap);
+            return false;
+        }
+
+        String sql = "INSERT INTO NguoiDung (tendangnhap, matkhau, hoten, email, sodienthoai, vaitro) VALUES (?, ?, ?, ?, ?, 'nhan_vien')";
+        
+        try (Connection conn = DbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, tenDangNhap);
+            stmt.setString(2, matKhau); // Nếu muốn mã hóa, hãy dùng hashPassword(matKhau)
             stmt.setString(3, hoTen);
             stmt.setString(4, email);
             stmt.setString(5, soDienThoai);
-            stmt.setString(6, vaiTro);
 
             int rowsInserted = stmt.executeUpdate();
-            return rowsInserted > 0;  // Trả về true nếu thêm thành công
-        } catch (SQLException e) {
+            return rowsInserted > 0;
+        } catch (Exception e) {
+            System.err.println("Lỗi khi đăng ký người dùng: " + e.getMessage());
             e.printStackTrace();
         }
         return false;
     }
 
-    // Đăng nhập
-    public NguoiDung loginUser(String email, String matKhau) {
-        String sql = "SELECT * FROM nguoidung WHERE email = ? AND matkhau = ?";
+    // HÀM KIỂM TRA TÀI KHOẢN TỒN TẠI
+    private boolean isUserExists(String tenDangNhap) {
+        String sql = "SELECT COUNT(*) FROM NguoiDung WHERE tendangnhap = ?";
         
-        try (Connection conn = DbConnection.getConnection();  
+        try (Connection conn = DbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-             
-            stmt.setString(1, email);
-            stmt.setString(2, matKhau);
-            ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) {
-                NguoiDung nguoiDung = new NguoiDung();
-                nguoiDung.setMaNguoiDung(rs.getInt("manguoidung"));
-                nguoiDung.setTenDangNhap(rs.getString("tendangnhap"));
-                nguoiDung.setMatKhau(rs.getString("matkhau"));
-                nguoiDung.setHoTen(rs.getString("hoten"));
-                nguoiDung.setEmail(rs.getString("email"));
-                nguoiDung.setSoDienThoai(rs.getString("sodienthoai"));
-                nguoiDung.setVaiTro(rs.getString("vaitro"));
-                nguoiDung.setNgayTao(rs.getTimestamp("ngaytao"));
-                return nguoiDung;
+            stmt.setString(1, tenDangNhap);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next() && rs.getInt(1) > 0) {
+                return true; // Tài khoản đã tồn tại
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            System.err.println("Lỗi kiểm tra tài khoản: " + e.getMessage());
             e.printStackTrace();
         }
-        return null;  // Trả về null nếu không tìm thấy tài khoản
+        return false;
     }
-
-	public NguoiDung kiemTraDangNhap(String email, String matKhau) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
